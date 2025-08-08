@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin Paneli - Başvurular</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; background: white; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background-color: #333; color: white; }
+        a { padding: 6px 12px; border-radius: 4px; color: white; text-decoration: none; }
+        .onayla { background-color: #4CAF50; }
+        .reddet { background-color: #f44336; }
+        .logout { margin-bottom: 20px; display: inline-block; background: #555; }
+    </style>
+</head>
+<body>
+
+    <a href="{{ url_for('cikis') }}" class="logout">Çıkış Yap</a>
+
+    <h2>Başvurular</h2>
+    {% if basvurular %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Ad</th><th>Soyad</th><th>TC Kimlik</th><th>Tarih</th><th>Durum</th><th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in basvurular %}
+                <tr>
+                    <td>{{ b.ad }}</td>
+                    <td>{{ b.soyad }}</td>
+                    <td>{{ b.tc }}</td>
+                    <td>{{ b.tarih }}</td>
+                    <td>{{ b.durum }}</td>
+                    <td>
+                        {% if b.durum == 'beklemede' %}
+                            <a href="{{ url_for('onayla', index=loop.index0) }}" class="onayla">Onayla</a>
+                            <a href="{{ url_for('reddet', index=loop.index0) }}" class="reddet">Reddet</a>
+                        {% else %}
+                            {{ b.durum }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Henüz başvuru yok.</p>
+    {% endif %}
+
+    <h2>Başvuru Durumları Grafiği</h2>
+    <canvas id="durumGrafik" width="400" height="200"></canvas>
+
+    <script>
+        async function grafikVeriAl() {
+            const response = await fetch('/istatistik');
+            const data = await response.json();
+            return data;
+        }
+
+        async function grafikCiz() {
+            const veri = await grafikVeriAl();
+
+            const ctx = document.getElementById('durumGrafik').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Onaylandı', 'Reddedildi', 'Beklemede'],
+                    datasets: [{
+                        label: 'Başvuru Durumları',
+                        data: [veri.onaylanan, veri.reddedilen, veri.beklemede],
+                        backgroundColor: ['#4CAF50', '#f44336', '#ffca28'],
+                    }]
+                }
+            });
+        }
+
+        grafikCiz();
+    </script>
+
+</body>
+</html>
