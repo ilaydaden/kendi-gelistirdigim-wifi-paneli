@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin Girişi</title>
+</head>
+<body>
+    <h2>Admin Girişi</h2>
+    {% if hata %}
+        <p style="color:red;">{{ hata }}</p>
+    {% endif %}
+    <form method="POST">
+        <label>Şifre:</label><br>
+        <input type="password" name="sifre" required /><br><br>
+        <input type="submit" value="Giriş Yap" />
+    </form>
+</body>
+</html>
+0
+
