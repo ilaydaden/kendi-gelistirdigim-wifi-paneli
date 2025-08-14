@@ -1,0 +1,69 @@
+[
+  {
+    "ad": "emre",
+    "soyad": "ali",
+    "tc": "75421698",
+    "tarih": "2025-08-07 13:32:49",
+    "durum": "onaylandı"
+  },
+  {
+    "ad": "ela",
+    "soyad": "ersoy",
+    "tc": "2222222222222222222",
+    "tarih": "2025-08-07 13:46:11",
+    "durum": "onaylandı"
+  },
+  {
+    "ad": "remzi",
+    "soyad": "yilmaz",
+    "tc": "99999999999",
+    "tarih": "2025-08-07 13:46:27",
+    "durum": "reddedildi"
+  },
+  {
+    "ad": "ilayda",
+    "soyad": "yilmaz",
+    "tc": "77777777",
+    "tarih": "2025-08-07 13:46:44",
+    "durum": "reddedildi"
+  },
+  {
+    "ad": "alya",
+    "soyad": "alin",
+    "tc": "5555555454",
+    "tarih": "2025-08-07 13:46:56",
+    "durum": "reddedildi"
+  },
+  {
+    "ad": "eda",
+    "soyad": "sekerim",
+    "tc": "6969696969696",
+    "tarih": "2025-08-07 13:47:08",
+    "durum": "onaylandı"
+  },
+  {
+    "ad": "ilayda",
+    "soyad": "deniz",
+    "tc": "4554512.",
+    "tarih": "2025-08-07 14:05:18",
+    "durum": "beklemede"
+  },
+  {
+    "ad": "ilayda",
+    "soyad": "deniz",
+    "tc": "15687465123",
+    "email": "tc.ilaydadeniz@gmail.com",
+    "telefon": "05463458725",
+    "tarih": "2025-08-12 16:54:14",
+    "durum": "beklemede"
+  },
+  {
+    "ad": "ilayda",
+    "soyad": "deniz",
+    "tc": "15687465123",
+    "email": "tc.ilaydadeniz@gmail.com",
+    "telefon": "05463458725",
+    "tarih": "2025-08-12 16:54:33",
+    "durum": "beklemede"
+  }
+]

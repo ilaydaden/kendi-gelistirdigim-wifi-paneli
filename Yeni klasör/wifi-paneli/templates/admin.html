@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Wi-Fi Başvuruları</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .admin-container {
+            background: rgba(160, 69, 69, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 2rem 0;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .admin-body {
+            padding: 2rem;
+        }
+        
+        .table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 1rem;
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn-action {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0.2rem;
+        }
+        
+        .btn-onayla {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-onayla:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+        
+        .btn-reddet {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            border: none;
+            color: white;
+        }
+        
+        .btn-reddet:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+        
+        .btn-logout {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-logout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .status-beklemede {
+            background: linear-gradient(135deg, #ffc107 0%, #ffca28 100%);
+            color: #212529;
+        }
+        
+        .status-onaylandi {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .status-reddedildi {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stats-label {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-buttons {
+            margin-bottom: 2rem;
+        }
+        
+        .btn-filter {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            margin: 0 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-filter:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+        }
+        
+        .btn-filter.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: rgba(102, 126, 234, 0.8);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-container {
+                margin: 1rem;
+                border-radius: 15px;
+            }
+            
+            .admin-header {
+                border-radius: 15px 15px 0 0;
+                padding: 1.5rem;
+            }
+            
+            .admin-body {
+                padding: 1rem;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="admin-container">
+                    <div class="admin-header">
+                        <h2><i class="fas fa-shield-alt me-2"></i>Wi-Fi Başvuru Yönetim Paneli</h2>
+                        <p>Misafir Wi-Fi başvurularını yönetin ve onaylayın</p>
+                    </div>
+                    
+                    <div class="admin-body">
+                        <!-- Üst Menü -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h4 class="mb-0"><i class="fas fa-list me-2"></i>Başvuru Listesi</h4>
+                            </div>
+                            <div>
+                                <a href="{{ url_for('qr_page') }}" class="btn btn-logout me-2">
+                                    <i class="fas fa-qrcode me-2"></i>QR Kodlar
+                                </a>
+                                <a href="{{ url_for('cikis') }}" class="btn btn-logout">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- İstatistik Kartları -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stats-card text-center">
+                                    <div class="stats-number" id="beklemedeCount">0</div>
+                                    <div class="stats-label">Beklemede</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card text-center">
+                                    <div class="stats-number" id="onaylandiCount">0</div>
+                                    <div class="stats-label">Onaylandı</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card text-center">
+                                    <div class="stats-number" id="reddedildiCount">0</div>
+                                    <div class="stats-label">Reddedildi</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stats-card text-center">
+                                    <div class="stats-number" id="toplamCount">0</div>
+                                    <div class="stats-label">Toplam</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Filtreleme Butonları -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="filter-buttons text-center">
+                                    <button class="btn btn-filter active" data-filter="tum" onclick="filterBasvurular('tum')">
+                                        <i class="fas fa-list me-2"></i>Tümü
+                                    </button>
+                                    <button class="btn btn-filter" data-filter="beklemede" onclick="filterBasvurular('beklemede')">
+                                        <i class="fas fa-clock me-2"></i>Beklemede
+                                    </button>
+                                    <button class="btn btn-filter" data-filter="onaylandı" onclick="filterBasvurular('onaylandı')">
+                                        <i class="fas fa-check me-2"></i>Onaylandı
+                                    </button>
+                                    <button class="btn btn-filter" data-filter="reddedildi" onclick="filterBasvurular('reddedildi')">
+                                        <i class="fas fa-times me-2"></i>Reddedildi
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Başvuru Tablosu -->
+                        {% if basvurular %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th><i class="fas fa-user me-1"></i>Ad Soyad</th>
+                                            <th><i class="fas fa-id-card me-1"></i>TC Kimlik</th>
+                                            <th><i class="fas fa-envelope me-1"></i>E-posta</th>
+                                            <th><i class="fas fa-phone me-1"></i>Telefon</th>
+                                            <th><i class="fas fa-calendar-alt me-1"></i>Başvuru Tarihi</th>
+                                            <th><i class="fas fa-info-circle me-1"></i>Durum</th>
+                                            <th><i class="fas fa-cogs me-1"></i>İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for b in basvurular %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ b.ad }} {{ b.soyad }}</strong>
+                                            </td>
+                                            <td>{{ b.tc }}</td>
+                                            <td>{{ b.email }}</td>
+                                            <td>{{ b.telefon }}</td>
+                                            <td>{{ b.tarih }}</td>
+                                            <td>
+                                                {% if b.durum == 'beklemede' %}
+                                                    <span class="status-badge status-beklemede">
+                                                        <i class="fas fa-clock me-1"></i>Beklemede
+                                                    </span>
+                                                {% elif b.durum == 'onaylandı' %}
+                                                    <span class="status-badge status-onaylandi">
+                                                        <i class="fas fa-check me-1"></i>Onaylandı
+                                                    </span>
+                                                {% else %}
+                                                    <span class="status-badge status-reddedildi">
+                                                        <i class="fas fa-times me-1"></i>Reddedildi
+                                                    </span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if b.durum == 'beklemede' %}
+                                                    <button class="btn btn-action btn-onayla" onclick="onayla({{ b.id }})">
+                                                        <i class="fas fa-check me-1"></i>Onayla
+                                                    </button>
+                                                    <button class="btn btn-action btn-reddet" onclick="reddet({{ b.id }})">
+                                                        <i class="fas fa-times me-1"></i>Reddet
+                                                    </button>
+                                                {% else %}
+                                                    <span class="text-muted">{{ b.durum }}</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">Henüz başvuru bulunmuyor</h5>
+                                <p class="text-muted">Misafirler form doldurduğunda burada görünecek</p>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Grafik -->
+                        <div class="chart-container mt-4">
+                            <h5 class="mb-3"><i class="fas fa-chart-pie me-2"></i>Başvuru Durumları Grafiği</h5>
+                            <canvas id="durumGrafik" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function grafikVeriAl() {
+            const response = await fetch('/istatistik');
+            const data = await response.json();
+            return data;
+        }
+
+        async function grafikCiz() {
+            const veri = await grafikVeriAl();
+            
+            // İstatistik sayılarını güncelle
+            document.getElementById('beklemedeCount').textContent = veri.beklemede;
+            document.getElementById('onaylandiCount').textContent = veri.onaylanan;
+            document.getElementById('reddedildiCount').textContent = veri.reddedilen;
+            document.getElementById('toplamCount').textContent = veri.beklemede + veri.onaylanan + veri.reddedilen;
+
+            const ctx = document.getElementById('durumGrafik').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Onaylandı', 'Reddedildi', 'Beklemede'],
+                    datasets: [{
+                        label: 'Başvuru Durumları',
+                        data: [veri.onaylanan, veri.reddedilen, veri.beklemede],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(255, 193, 7, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(220, 53, 69, 1)',
+                            'rgba(255, 193, 7, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function onayla(basvuruId) {
+            if (confirm('Bu başvuruyu onaylamak istediğinizden emin misiniz?')) {
+                window.location.href = `/onayla/${basvuruId}`;
+            }
+        }
+
+        function reddet(basvuruId) {
+            if (confirm('Bu başvuruyu reddetmek istediğinizden emin misiniz?')) {
+                window.location.href = `/reddet/${basvuruId}`;
+            }
+        }
+
+        function filterBasvurular(durum) {
+            // Aktif buton stilini güncelle
+            document.querySelectorAll('.btn-filter').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Tablo satırlarını filtrele
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const durumCell = row.querySelector('td:nth-child(6)');
+                if (durumCell) {
+                    const durumText = durumCell.textContent.trim();
+                    if (durum === 'tum' || durumText.toLowerCase().includes(durum.toLowerCase())) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Sayfa yüklendiğinde grafik çiz
+        grafikCiz();
+        
+        // Her 30 saniyede bir güncelle
+        setInterval(grafikCiz, 30000);
+    </script>
+</body>
+</html>

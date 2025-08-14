@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Wi-Fi Başvuru Formu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideIn 0.6s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .form-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+        
+        .form-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .form-body {
+            padding: 2.5rem;
+        }
+        
+        .form-floating {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            color: #333;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            transform: translateY(-2px);
+            background: white;
+            color: #333;
+        }
+        
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+        
+        .form-check {
+            margin: 1.5rem 0;
+        }
+        
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+        
+        .alert {
+            border-radius: 12px;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e9ecef;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .step-dot.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+        
+        .step-dot.completed {
+            background: #28a745;
+        }
+        
+        @media (max-width: 768px) {
+            .form-container {
+                margin: 1rem;
+                border-radius: 15px;
+            }
+            
+            .form-header {
+                border-radius: 15px 15px 0 0;
+                padding: 1.5rem;
+            }
+            
+            .form-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .form-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-4">
+        <div class="row w-100 justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2><i class="fas fa-wifi me-2"></i>Wi-Fi Erişim Başvurusu</h2>
+                        <p>Misafir ağına erişim için lütfen bilgilerinizi doldurun</p>
+                    </div>
+                    
+                    <div class="form-body">
+                        <!-- Progress Bar -->
+                        <div class="progress mb-4" style="height: 4px;">
+                            <div class="progress-bar" id="progressBar" style="width: 50%"></div>
+                        </div>
+                        
+                        <!-- Step Indicators -->
+                        <div class="step-indicator">
+                            <div class="step-dot active" id="step1"></div>
+                            <div class="step-dot" id="step2"></div>
+                        </div>
+                        
+                        <form method="POST" action="/bildir" id="wifiForm" novalidate>
+                            <!-- Step 1: Kişisel Bilgiler -->
+                            <div class="form-step active" id="step1-content">
+                                <h5 class="mb-4 text-center"><i class="fas fa-user me-2"></i>Kişisel Bilgiler</h5>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="ad" name="ad" placeholder="Adınız" required>
+                                            <label for="ad"><i class="fas fa-user me-2"></i>Adınız</label>
+                                            <div class="invalid-feedback">Lütfen adınızı giriniz.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="soyad" name="soyad" placeholder="Soyadınız" required>
+                                            <label for="soyad"><i class="fas fa-user me-2"></i>Soyadınız</label>
+                                            <div class="invalid-feedback">Lütfen soyadınızı giriniz.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="tc" name="tc" placeholder="TC Kimlik No" pattern="[0-9]{11}" maxlength="11" required>
+                                    <label for="tc"><i class="fas fa-id-card me-2"></i>TC Kimlik No</label>
+                                    <div class="invalid-feedback">Lütfen geçerli bir TC kimlik numarası giriniz (11 haneli).</div>
+                                </div>
+                                
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="E-posta Adresiniz" required>
+                                    <label for="email"><i class="fas fa-envelope me-2"></i>E-posta Adresiniz</label>
+                                    <div class="invalid-feedback">Lütfen geçerli bir e-posta adresi giriniz.</div>
+                                </div>
+                                
+                                <div class="form-floating">
+                                    <input type="tel" class="form-control" id="telefon" name="telefon" placeholder="Telefon Numarası" pattern="[0-9]{10,11}" required>
+                                    <label for="telefon"><i class="fas fa-phone me-2"></i>Telefon Numarası</label>
+                                    <div class="invalid-feedback">Lütfen geçerli bir telefon numarası giriniz.</div>
+                                </div>
+                                
+                                <button type="button" class="btn btn-submit" onclick="nextStep()">
+                                    <i class="fas fa-arrow-right me-2"></i>Devam Et
+                                </button>
+                            </div>
+                            
+                            <!-- Step 2: Onay ve Gönderim -->
+                            <div class="form-step" id="step2-content">
+                                <h5 class="mb-4 text-center"><i class="fas fa-check-circle me-2"></i>Bilgileri Onaylayın</h5>
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Lütfen girdiğiniz bilgilerin doğruluğunu kontrol ediniz.
+                                </div>
+                                
+                                <div id="summary" class="mb-4">
+                                    <!-- Özet bilgiler buraya gelecek -->
+                                </div>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="onay" required>
+                                    <label class="form-check-label" for="onay">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        <strong>Kullanım şartlarını</strong> okudum ve kabul ediyorum. Wi-Fi ağını yasal amaçlar için kullanacağımı taahhüt ediyorum.
+                                    </label>
+                                    <div class="invalid-feedback">Devam etmek için kullanım şartlarını kabul etmelisiniz.</div>
+                                </div>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="kvkk" required>
+                                    <label class="form-check-label" for="kvkk">
+                                        <i class="fas fa-user-shield me-2"></i>
+                                        <strong>KVKK</strong> kapsamında kişisel verilerimin işlenmesine izin veriyorum.
+                                    </label>
+                                    <div class="invalid-feedback">Devam etmek için KVKK onayını vermelisiniz.</div>
+                                </div>
+                                
+                                <div class="row mt-4">
+                                    <div class="col-6">
+                                        <button type="button" class="btn btn-outline-secondary w-100" onclick="prevStep()">
+                                            <i class="fas fa-arrow-left me-2"></i>Geri
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-submit">
+                                            <i class="fas fa-paper-plane me-2"></i>Başvuruyu Gönder
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 2;
+        
+        // Form alanlarını topla
+        const formFields = {
+            'ad': 'Ad',
+            'soyad': 'Soyad',
+            'tc': 'TC Kimlik No',
+            'email': 'E-posta',
+            'telefon': 'Telefon'
+        };
+        
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Step dots güncelle
+            for (let i = 1; i <= totalSteps; i++) {
+                const dot = document.getElementById('step' + i);
+                if (i < currentStep) {
+                    dot.classList.remove('active');
+                    dot.classList.add('completed');
+                } else if (i === currentStep) {
+                    dot.classList.add('active');
+                    dot.classList.remove('completed');
+                } else {
+                    dot.classList.remove('active', 'completed');
+                }
+            }
+        }
+        
+        function showStep(step) {
+            // Tüm step'leri gizle
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById('step' + i + '-content').classList.remove('active');
+            }
+            
+            // İlgili step'i göster
+            document.getElementById('step' + step + '-content').classList.add('active');
+            
+            updateProgress();
+        }
+        
+        function validateStep(step) {
+            const stepElement = document.getElementById('step' + step + '-content');
+            const inputs = stepElement.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                    input.classList.add('is-valid');
+                }
+            });
+            
+            return isValid;
+        }
+        
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    showStep(currentStep);
+                    
+                    if (currentStep === 2) {
+                        updateSummary();
+                    }
+                }
+            }
+        }
+        
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+        
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summary');
+            let summaryHTML = '<div class="row">';
+            
+            Object.keys(formFields).forEach(field => {
+                const value = document.getElementById(field).value;
+                if (value) {
+                    summaryHTML += `
+                        <div class="col-md-6 mb-2">
+                            <strong>${formFields[field]}:</strong><br>
+                            <span class="text-muted">${value}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            summaryHTML += '</div>';
+            summaryDiv.innerHTML = summaryHTML;
+        }
+        
+        // Form gönderimi
+        document.getElementById('wifiForm').addEventListener('submit', function(e) {
+            if (!validateStep(currentStep)) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Loading durumu
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Gönderiliyor...';
+            submitBtn.disabled = true;
+            
+            // 2 saniye sonra form gönder
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+        
+        // Input validasyonu
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.hasAttribute('required')) {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                }
+            });
+        });
+        
+        // TC Kimlik validasyonu
+        document.getElementById('tc').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 11) {
+                this.value = this.value.slice(0, 11);
+            }
+        });
+        
+        // Telefon validasyonu
+        document.getElementById('telefon').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+</body>
+</html>
+
